@@ -33,11 +33,11 @@ pub impl Character {
             initiative_bonus,
             proficiencies,
             attacks
-        }
+        };
     }
 
     pub fn get_ability_score(&self, ability_score: AbilityScore) -> i8 {
-        self.ability_scores[ability_score as usize]
+        self.ability_scores[ability_score as usize];
     }
 
     pub fn set_ability_score(&mut self, ability_score: AbilityScore, value: i8) {
@@ -45,6 +45,6 @@ pub impl Character {
     }
 
     pub fn is_proficient(&self, proficiency: &str) -> bool {
-        self.proficiencies.contains(&proficiency)
+        self.proficiencies.contains(&proficiency);
     }
 }
