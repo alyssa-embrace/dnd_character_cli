@@ -17,12 +17,22 @@ struct CliArgs {
 #[derive(Subcommand, Debug)]
 enum Command {
     Create(CreateArgs),
+    Delete(DeleteArgs),
 }
 
 #[derive(Args, Debug)]
 struct CreateArgs {
     #[arg(short, long)]
-    path: Option<String>,
+    path: String,
+    
+    #[arg(short, long)]
+    overwrite: bool,
+}
+
+#[derive(Args, Debug)]
+struct DeleteArgs {
+    #[arg(short, long)]
+    path: String,
 }
 
 fn main() {
@@ -31,5 +41,7 @@ fn main() {
     match args.command {
         Command::Create(create_args) => 
             command_handlers::handle_create(&create_args),
+        Command::Delete(delete_args) =>
+            command_handlers::handle_delete(&delete_args),
     }
 }

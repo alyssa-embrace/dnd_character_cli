@@ -1,21 +1,22 @@
-use crate::models::statistics::AbilityScore;
-use crate::views::character_inputs;
+use std::fs::File;
+use std::path::Path;
+use std::io::Write;
+use toml;
+use crate::CreateArgs;
 use crate::models::attack::Attack;
 use crate::models::character::Character;
-use toml;
-use std::fs::File;
-use std::io::Write;
-use crate::CreateArgs;
-use crate::views::const_errors;
+use crate::models::statistics::AbilityScore;
+use crate::views::character_inputs;
+use crate::DeleteArgs;
 
 pub fn handle_create(args: &CreateArgs){
-    if args.path.is_none() {
-        println!("{}", const_errors::CHARACTER_FILE_PATH_NOT_GIVEN);
+    if Path::new(args.path.as_str()).exists() && !args.overwrite {
+        println!("File already exists. Did you mean to enable overwrite?");
         return;
+    } else {
+        let character = create_character_from_user_input();
+        write_character_to_file(character, &args.path.as_str());
     }
-
-    let character = create_character_from_user_input();
-    write_character_to_file(character, args.path.as_ref().unwrap());
 }
 
 fn create_character_from_user_input() -> Character {
@@ -48,4 +49,13 @@ fn write_character_to_file(character: Character, path: &str) {
     let serialized = toml::to_string_pretty(&character).unwrap();
     let mut file = File::create(path).unwrap();
     file.write_all(serialized.as_bytes()).unwrap();
+}
+
+pub fn handle_delete(args: &DeleteArgs) {
+    if Path::new(args.path.as_str()).exists() {
+        std::fs::remove_file(args.path.as_str()).unwrap();
+    } else {
+        println!("File not found");
+    }
+    
 }
