@@ -57,5 +57,4 @@ pub fn handle_delete(args: &DeleteArgs) {
     } else {
         println!("File not found");
     }
-    
 }

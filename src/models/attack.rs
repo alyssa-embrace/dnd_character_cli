@@ -4,7 +4,8 @@ use serde::{Serialize, Deserialize};
 pub struct Attack {
     pub name: String,
     pub description: String,
-    pub attack_bonus: i8,
-    pub damage_bonus: i8,
-    pub damage_dice: Vec<i8>,
+    pub attack_bonus: u8,
+    pub damage_bonus: u8,
+    pub damage_dice: Vec<u8>,
+    pub count: u8,
 }

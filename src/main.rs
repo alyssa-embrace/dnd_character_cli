@@ -16,8 +16,12 @@ struct CliArgs {
 
 #[derive(Subcommand, Debug)]
 enum Command {
-    Create(CreateArgs),
-    Delete(DeleteArgs),
+    CreateCharacter(CreateArgs),
+    ModifyCharacter,
+    DeleteCharacter(DeleteArgs),
+    CreateAttack,
+    ModifyAttack,
+    DeleteAttack,
 }
 
 #[derive(Args, Debug)]
@@ -39,9 +43,13 @@ fn main() {
     let args: CliArgs = CliArgs::parse();
 
     match args.command {
-        Command::Create(create_args) => 
+        Command::CreateCharacter(create_args) => 
             command_handlers::handle_create(&create_args),
-        Command::Delete(delete_args) =>
+        Command::ModifyCharacter => println!("TODO: Modify character"),
+        Command::DeleteCharacter(delete_args) =>
             command_handlers::handle_delete(&delete_args),
+        Command::CreateAttack => println!("TODO: Create attack"),
+        Command::ModifyAttack => println!("TODO: Modify attack"),
+        Command::DeleteAttack => println!("TODO: Delete attack"),
     }
 }
