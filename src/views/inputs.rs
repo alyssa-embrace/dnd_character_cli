@@ -59,12 +59,11 @@ pub fn show_initiative_dialog() -> i8 {
 }
 
 pub fn show_proficiency_dialog() -> Vec<String> {
-    let items = vec!["Skill - Acrobatics", "Skill - Animal Handling", "Skill - Arcana", "Skill - Athletics", 
-        "Skill - Deception", "Skill - History", "Skill - Insight", "Skill - Intimidation", "Skill - Investigation", 
-        "Skill - Medicine", "Skill - Nature", "Skill - Perception", "Skill - Performance", "Skill - Persuasion", 
-        "Skill - Religion", "Skill - Sleight of Hand", "Skill - Stealth", "Skill - Survival", 
-        "Save - Strength", "Save - Dexterity", "Save - Constitution", 
-        "Save - Intelligence", "Save - Wisdom", "Save - Charisma"];
+    let items = vec!["Strength", "Dexterity", "Constitution", 
+        "Intelligence", "Wisdom", "Charisma", "Acrobatics", "Animal Handling", "Arcana", "Athletics", 
+        "Deception", "History", "Insight", "Intimidation", "Investigation", 
+        "Medicine", "Nature", "Perception", "Performance", "Persuasion", 
+        "Religion", "Sleight of Hand", "Stealth", "Survival"];
     let selection = MultiSelect::new()
         .with_prompt("Please select proficiencies (Space to select, Enter to confirm)")
         .items(&items)
