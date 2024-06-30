@@ -1,9 +1,8 @@
 use crate::{
-    controllers::command_handlers::serde_utils::construct_from_file, 
+    command_handlers::{errors::ModifyOpError, serde_utils::construct_from_file},
     models::{attack::Attack, cli::ModifyAttackArgs},
-    views::inputs
+    views::inputs,
 };
-use super::errors::ModifyOpError;
 
 pub fn handle(args: &ModifyAttackArgs) {
     match construct_from_file::<Attack>(&args.path) {

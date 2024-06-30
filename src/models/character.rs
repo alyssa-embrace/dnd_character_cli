@@ -1,5 +1,8 @@
 use crate::models::statistics::AbilityScore;
-use serde::{Serialize, Deserialize};
+use serde::{
+    Serialize, 
+    Deserialize
+};
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default)]
 pub struct Character {

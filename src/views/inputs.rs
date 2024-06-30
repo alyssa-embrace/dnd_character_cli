@@ -72,7 +72,6 @@ pub fn show_proficiency_dialog() -> Vec<String> {
         .unwrap();
     let mut proficiencies: Vec<String> = Vec::new();
     for i in selection.iter() {
-        println!("{}", items[*i]);
         proficiencies.push(items[*i].to_string());
     }
     proficiencies

@@ -1,6 +1,15 @@
-use crate::models::character::Character;
-use crate::models::cli::{ModifyCharArgs, ModifyCommands};
-use super::serde_utils::{construct_from_file, flush_to_file};
+use crate::{
+    views::inputs,
+    models::{
+        character::Character,
+        cli::ModifyCharArgs,
+        statistics::AbilityScore,
+    },
+    command_handlers::serde_utils::{
+        construct_from_file,
+        flush_to_file,
+    },
+};
 
 pub fn handle(args: &ModifyCharArgs) {
     match construct_from_file::<Character>(&args.path) {
@@ -27,79 +36,44 @@ pub fn handle(args: &ModifyCharArgs) {
     }
 }
 
-fn modify(character: &Character, args: &ModifyCharArgs) -> Character {    
-    match &args.command {
-        ModifyCommands::AbilityScores(margs) => 
-            modify_value(character, margs, |c, a| -> Character {
-                if a.new_values.len() != 6 {
-                    // Reject changes that don't have 6 ability scores
-                    // TODO: We should throw an error here
-                    return c.clone();
-                }
-                let mut new_character: Character = c.clone();
-                for index in 0..a.new_values.len() {
-                    new_character.ability_scores[index] = a.new_values[index];
-                }
-                new_character
-            }),
-        ModifyCommands::ProficiencyBonus(margs) => 
-            modify_value(character, margs, |c, a| -> Character {
-                let mut new_character = c.clone();
-                new_character.proficiency_bonus = a.new_value;
-                new_character
-            }),
-        ModifyCommands::AddProficiency(margs) => 
-            modify_value(character, margs, |c, a| -> Character {
-                let mut new_character = c.clone();
-                new_character.proficiencies.push(a.value.clone());
-                new_character
-            }),
-        ModifyCommands::RmProficiency(margs) => 
-            modify_value(character, margs, |c, a| -> Character {
-                let mut new_character = c.clone();
-                new_character.proficiencies.retain(|p| p != &a.value);
-                new_character
-            }),
-        ModifyCommands::Hitpoints(margs) => 
-            modify_value(character, margs, |c, a| -> Character {
-                let mut new_character = c.clone();
-                new_character.hit_points = a.new_value;
-                new_character
-            }),
-        ModifyCommands::ArmorClass(margs) => 
-            modify_value(character, margs, |c, a| -> Character {
-                let mut new_character = c.clone();
-                new_character.armor_class = a.new_value;
-                new_character
-            }),
-        ModifyCommands::Speed(margs) => 
-            modify_value(character, margs, |c, a| -> Character {
-                let mut new_character = c.clone();
-                new_character.speed = a.new_value;
-                new_character
-            }),
-        ModifyCommands::Initiative(margs) => 
-            modify_value(character, margs, |c, a| -> Character {
-                let mut new_character = c.clone();
-                new_character.initiative_bonus = a.new_value;
-                new_character
-            }),
-        ModifyCommands::Description => Character::default(),
-        ModifyCommands::AddAttack(margs) => 
-            modify_value(character, margs, |c, a| -> Character {
-                let mut new_character = c.clone();
-                new_character.attacks.push(a.value.clone());
-                new_character
-            }),
-        ModifyCommands::RmAttack(margs) => 
-            modify_value(character, margs, |c, a| -> Character {
-                let mut new_character = c.clone();
-                new_character.attacks.retain(|p| p != &a.value);
-                new_character
-            }),
-    }
-}
+fn modify (character: &Character, args: &ModifyCharArgs) -> Character {
+    let mut new_character = character.clone();
 
-fn modify_value<T>(character: &Character, args: &T, f: fn(&Character, &T) -> Character) -> Character {
-    f(character, args)
+    if let Some(proficiency_bonus) = args.proficiency_bonus {
+        new_character.proficiency_bonus = proficiency_bonus;
+    }
+    if let Some(hitpoints) = args.hitpoints {
+        new_character.hit_points = hitpoints;
+    }
+    if let Some(armor_class) = args.armor_class {
+        new_character.armor_class = armor_class;
+    }
+    if let Some(speed) = args.speed {
+        new_character.speed = speed;
+    }
+    if let Some(initiative) = args.initiative {
+        new_character.initiative_bonus = initiative;
+    }
+    if args.description {
+        new_character.description = inputs::show_description_editor();
+    }
+    if args.attacks {
+        // TODO: Implement attack modification
+        new_character.attacks = vec![];
+    }
+    if args.proficiencies {
+        new_character.proficiencies = inputs::show_proficiency_dialog();
+    }
+    if args.ability_scores {
+        new_character.ability_scores = [
+            inputs::show_ability_score_dialog(AbilityScore::Strength),
+            inputs::show_ability_score_dialog(AbilityScore::Dexterity),
+            inputs::show_ability_score_dialog(AbilityScore::Constitution),
+            inputs::show_ability_score_dialog(AbilityScore::Intelligence),
+            inputs::show_ability_score_dialog(AbilityScore::Wisdom),
+            inputs::show_ability_score_dialog(AbilityScore::Charisma),
+        ];
+    }
+
+    new_character
 }

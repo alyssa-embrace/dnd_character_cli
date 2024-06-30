@@ -29,12 +29,36 @@ pub struct CreateArgs {
 }
 
 #[derive(Args, Debug)]
-pub struct ModifyCharArgs { 
-    #[command(subcommand)]
-    pub command: ModifyCommands,
-    
+pub struct ModifyCharArgs {  
     #[arg(short, long)]
-    pub path: String
+    pub path: String,
+
+    #[arg(short('P'), long)]
+    pub proficiency_bonus: Option<u8>,
+
+    #[arg(short('H'), long)]
+    pub hitpoints: Option<u16>,
+
+    #[arg(short, long)]
+    pub armor_class: Option<u8>,
+
+    #[arg(short, long)]
+    pub speed: Option<u8>,
+
+    #[arg(short, long("init"))]
+    pub initiative: Option<i8>,
+    
+    #[arg(short('I'), long("desc"))]
+    pub description: bool,
+
+    #[arg(short('j'), long)]
+    pub attacks: bool,
+
+    #[arg(short('k'), long("prof"))]
+    pub proficiencies: bool,
+
+    #[arg(short('A'), long)]
+    pub ability_scores:bool
 }
 
 #[derive(Args, Debug)]
@@ -43,60 +67,26 @@ pub struct DeleteArgs {
     pub path: String,
 }
 
-#[derive(Subcommand, Debug)]
-pub enum ModifyCommands {
-    AbilityScores(ModifyVectorU8),
-    ProficiencyBonus(ModifyU8),
-    AddProficiency(StringArg),
-    RmProficiency(StringArg),
-    Hitpoints(ModifyU16),
-    ArmorClass(ModifyU8),
-    Speed(ModifyU8),
-    Initiative(ModifyI8Args),
-    Description,
-    AddAttack(StringArg),
-    RmAttack(StringArg),
-}
-
-#[derive(Args, Debug)]
-pub struct ModifyVectorU8 {
-    pub new_values: Vec<u8>,
-}
-
-#[derive(Args, Debug)]
-pub struct ModifyU8 {
-    pub new_value: u8,
-}
-
-#[derive(Args, Debug)]
-pub struct ModifyU16 {
-    pub new_value: u16,
-}
-
-#[derive(Args, Debug)]
-pub struct ModifyI8Args {
-    pub new_value: i8,
-}
-
-#[derive(Args, Debug)]
-pub struct StringArg {
-    pub value: String,
-}
-
 #[derive(Args, Debug)]
 pub struct ModifyAttackArgs {
     #[arg(short, long)]
     pub path: String,
+    
     #[arg(short, long)]
     pub name: Option<String>,
-    #[arg(short('i'), long("desc"))]
+    
+    #[arg(short('I'), long("desc"))]
     pub description: bool,
+    
     #[arg(short, long)]
     pub attack_bonus: Option<i8>,
+    
     #[arg(short, long)]
     pub damage_bonus: Option<i8>,
+    
     #[arg(short('D'), long)]
     pub damage_dice: bool,
+   
     #[arg(short, long)]
     pub count: Option<u8>,
 }

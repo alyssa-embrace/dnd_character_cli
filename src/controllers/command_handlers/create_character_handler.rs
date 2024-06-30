@@ -1,8 +1,17 @@
-use std::{fs::File, path::Path, io::Write};
+use std::{
+    fs::File, 
+    path::Path, 
+    io::Write
+};
 use toml;
-use crate::models::{character::Character, statistics::AbilityScore};
-use crate::views::inputs;
-use crate::models::cli::CreateArgs;
+use crate::{
+    models::{
+        character::Character, 
+        statistics::AbilityScore, 
+        cli::CreateArgs
+    },
+    views::inputs,
+};
 
 pub fn handle(args: &CreateArgs){
     if Path::new(args.path.as_str()).exists() && !args.overwrite {
