@@ -1,4 +1,4 @@
-use dialoguer::{Editor, Input, InputValidator};
+use dialoguer::{Editor, MultiSelect, Input, InputValidator};
 use crate::models::statistics::AbilityScore;
 use crate::views::validators;
 
@@ -28,7 +28,7 @@ pub fn show_ability_score_dialog(ability_score: AbilityScore) -> u8 {
     input.parse::<u8>().unwrap_or(10)
 }
 
-pub fn show_proficiency_dialog() -> u8 {
+pub fn show_proficiency_bonus_dialog() -> u8 {
     let input = show_input_dialog("Please enter a proficiency bonus",
         "2", validators::ProficiencyValidator{});
     input.parse::<u8>().unwrap_or(2)
@@ -58,13 +58,67 @@ pub fn show_initiative_dialog() -> i8 {
     input.parse::<i8>().unwrap_or(0)
 }
 
+pub fn show_proficiency_dialog() -> Vec<String> {
+    let items = vec!["Skill - Acrobatics", "Skill - Animal Handling", "Skill - Arcana", "Skill - Athletics", 
+        "Skill - Deception", "Skill - History", "Skill - Insight", "Skill - Intimidation", "Skill - Investigation", 
+        "Skill - Medicine", "Skill - Nature", "Skill - Perception", "Skill - Performance", "Skill - Persuasion", 
+        "Skill - Religion", "Skill - Sleight of Hand", "Skill - Stealth", "Skill - Survival", 
+        "Save - Strength", "Save - Dexterity", "Save - Constitution", 
+        "Save - Intelligence", "Save - Wisdom", "Save - Charisma"];
+    let selection = MultiSelect::new()
+        .with_prompt("Please select proficiencies (Space to select, Enter to confirm)")
+        .items(&items)
+        .interact()
+        .unwrap();
+    let mut proficiencies: Vec<String> = Vec::new();
+    for i in selection.iter() {
+        println!("{}", items[*i]);
+        proficiencies.push(items[*i].to_string());
+    }
+    proficiencies
+}
+
+pub fn show_attack_bonus_dialog() -> i8 {
+    let input = show_input_dialog("Please enter an attack bonus", 
+        "0", validators::AttackBonusValidator{});
+    input.parse::<i8>().unwrap_or(0)
+}
+
+pub fn show_damage_bonus_dialog() -> i8 {
+    let input = show_input_dialog("Please enter a damage bonus", 
+        "0", validators::DamageBonusValidator{});
+    input.parse::<i8>().unwrap_or(0)
+}
+
 pub fn show_name_dialog() -> String {
     Input::new()
         .with_prompt("Please enter a name")
         .allow_empty(false)
-        .with_initial_text("Unnamed Character")
+        .with_initial_text("Unnamed")
         .interact_text()
-        .unwrap_or("Unnamed Character".to_string())
+        .unwrap_or("Unnamed".to_string())
+}
+
+pub fn show_damage_dice_dialog() -> Vec<u8> {
+    let mut damage_dice = Vec::<u8>::new();
+    
+    loop {
+        let input = show_input_dialog("Please enter a die size (e.g. 4 or 6); q to quit",
+            "6", validators::DamageDieValidator{});
+        if input.contains("q") {
+            break;
+        }   
+        let die_size = input.parse::<u8>().unwrap_or(6); // Not an ideal default here
+        damage_dice.push(die_size);
+    }
+
+    damage_dice
+}
+
+pub fn show_attack_count_dialog() -> u8 {
+    let input = show_input_dialog("Please enter a count", 
+        "1", validators::CountValidator{});
+    input.parse::<u8>().unwrap_or(1)
 }
 
 pub fn show_description_editor() -> String {

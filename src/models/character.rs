@@ -1,4 +1,3 @@
-use crate::models::attack::Attack;
 use crate::models::statistics::AbilityScore;
 use serde::{Serialize, Deserialize};
 

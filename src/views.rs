@@ -1,2 +1,2 @@
-pub mod character_inputs;
+pub mod inputs;
 mod validators;

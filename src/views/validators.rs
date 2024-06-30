@@ -106,3 +106,75 @@ impl InputValidator<String> for SpeedValidator {
         Ok(())
     }
 }
+
+pub struct AttackBonusValidator {}
+
+impl InputValidator<String> for AttackBonusValidator {
+    type Err = String;
+    
+    fn validate(&mut self, input: &String) -> Result<(), String> {
+        let result = input.parse::<u8>();
+    
+        if result.is_err() {
+            return Err("Attack bonus must be a number".into());
+        }
+    
+        Ok(())
+    }
+}
+
+pub struct DamageBonusValidator {}
+
+impl InputValidator<String> for DamageBonusValidator {
+    type Err = String;
+    
+    fn validate(&mut self, input: &String) -> Result<(), String> {
+        let result = input.parse::<i8>();
+    
+        if result.is_err() {
+            return Err("Damage bonus must be a number".into());
+        }
+    
+        Ok(())
+    }
+}
+
+pub struct DamageDieValidator {}
+
+impl InputValidator<String> for DamageDieValidator {
+    type Err = String;
+    
+    fn validate(&mut self, input: &String) -> Result<(), String> {
+        let result = input.parse::<u8>();
+    
+        if result.is_err() {
+            if input.contains("q") {
+                return Ok(()); // Allow quitting
+            }
+            return Err("Damage die must be a number".into());
+        }
+        else if !(2..=100).contains(&result.unwrap()) {
+            return Err("Damage die must be between 2 and 100".into());
+        }
+    
+        Ok(())
+    }
+}
+
+pub struct CountValidator {}
+
+impl InputValidator<String> for CountValidator {
+    type Err = String;
+    
+    fn validate(&mut self, input: &String) -> Result<(), String> {
+        let result = input.parse::<u8>();
+    
+        if result.is_err() {
+            return Err("Count must be a number".into());
+        } else if result.unwrap() == 0 {
+            return Err("Count must be greater than 0".into());
+        }
+    
+        Ok(())
+    }
+}

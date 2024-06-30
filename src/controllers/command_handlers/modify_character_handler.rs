@@ -1,21 +1,11 @@
-use std::io::Write;
-
 use crate::models::character::Character;
-use crate::models::cli::{ModifyCharArgs, ModifyCommands, ModifyU8};
-
-#[derive(Debug)]
-enum ModifyCharOpError {
-    CouldNotFindFile(std::io::Error),
-    CouldNotCreateFile(std::io::Error),
-    CouldNotWriteFile(std::io::Error),
-    Deserialization(toml::de::Error),
-    Serialization(toml::ser::Error),
-}
+use crate::models::cli::{ModifyCharArgs, ModifyCommands};
+use super::serde_utils::{construct_from_file, flush_to_file};
 
 pub fn handle(args: &ModifyCharArgs) {
-    match construct_character_from_file(&args.path) {
+    match construct_from_file::<Character>(&args.path) {
         Ok(character) => {
-            match write_character_to_file(
+            match flush_to_file(
                 modify(&character, &args), 
                 &args.path
             ) {
@@ -108,21 +98,6 @@ fn modify(character: &Character, args: &ModifyCharArgs) -> Character {
                 new_character
             }),
     }
-}
-
-fn construct_character_from_file(path: &str) -> Result<Character, ModifyCharOpError>{
-    let file_contents = std::fs::read_to_string(path)
-        .map_err(ModifyCharOpError::CouldNotFindFile)?;
-    let character = toml::from_str(&file_contents)
-        .map_err(ModifyCharOpError::Deserialization)?;
-    Ok(character)
-}
-
-fn write_character_to_file(character: Character, path: &str) -> Result<(), ModifyCharOpError>{
-    let serialized = toml::to_string_pretty(&character).map_err(ModifyCharOpError::Serialization)?;
-    let mut file = std::fs::File::create(path).map_err(ModifyCharOpError::CouldNotCreateFile)?;
-    file.write_all(serialized.as_bytes()).map_err(ModifyCharOpError::CouldNotWriteFile)?;
-    Ok(())
 }
 
 fn modify_value<T>(character: &Character, args: &T, f: fn(&Character, &T) -> Character) -> Character {

@@ -11,16 +11,16 @@ pub struct CliArgs {
 
 #[derive(Subcommand, Debug)]
 pub enum Command {
-    CreateCharacter(CreateCharArgs),
+    CreateCharacter(CreateArgs),
     ModifyCharacter(ModifyCharArgs),
-    DeleteCharacter(DeleteCharArgs),
-    CreateAttack,
-    ModifyAttack,
-    DeleteAttack,
+    DeleteCharacter(DeleteArgs),
+    CreateAttack(CreateArgs),
+    ModifyAttack(ModifyAttackArgs),
+    DeleteAttack(DeleteArgs),
 }
 
 #[derive(Args, Debug)]
-pub struct CreateCharArgs {
+pub struct CreateArgs {
     #[arg(short, long)]
     pub path: String,
     
@@ -38,7 +38,7 @@ pub struct ModifyCharArgs {
 }
 
 #[derive(Args, Debug)]
-pub struct DeleteCharArgs {
+pub struct DeleteArgs {
     #[arg(short, long)]
     pub path: String,
 }
@@ -81,4 +81,22 @@ pub struct ModifyI8Args {
 #[derive(Args, Debug)]
 pub struct StringArg {
     pub value: String,
+}
+
+#[derive(Args, Debug)]
+pub struct ModifyAttackArgs {
+    #[arg(short, long)]
+    pub path: String,
+    #[arg(short, long)]
+    pub name: Option<String>,
+    #[arg(short('i'), long("desc"))]
+    pub description: bool,
+    #[arg(short, long)]
+    pub attack_bonus: Option<i8>,
+    #[arg(short, long)]
+    pub damage_bonus: Option<i8>,
+    #[arg(short('D'), long)]
+    pub damage_dice: bool,
+    #[arg(short, long)]
+    pub count: Option<u8>,
 }
