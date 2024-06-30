@@ -2,7 +2,7 @@ use crate::models::attack::Attack;
 use crate::models::statistics::AbilityScore;
 use serde::{Serialize, Deserialize};
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone, Default)]
 pub struct Character {
     pub name: String,
     pub description: String,
@@ -13,7 +13,7 @@ pub struct Character {
     pub speed: u8,
     pub initiative_bonus: i8,
     pub proficiencies: Vec<String>,
-    pub attacks: Vec<Attack>,
+    pub attacks: Vec<String>,
 }
 
 impl Character {
@@ -26,7 +26,7 @@ impl Character {
         speed: u8, 
         initiative_bonus: i8,
         proficiencies: Vec<String>,
-        attacks: Vec<Attack> ) -> Character {
+        attacks: Vec<String> ) -> Character {
         Character {
             name,
             description,
