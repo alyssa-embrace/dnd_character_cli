@@ -63,7 +63,8 @@ pub fn show_proficiency_dialog() -> Vec<String> {
         "Intelligence", "Wisdom", "Charisma", "Acrobatics", "Animal Handling", "Arcana", "Athletics", 
         "Deception", "History", "Insight", "Intimidation", "Investigation", 
         "Medicine", "Nature", "Perception", "Performance", "Persuasion", 
-        "Religion", "Sleight of Hand", "Stealth", "Survival"];
+        "Religion", "Sleight of Hand", "Stealth", "Survival", "Martial", "Simple",
+        "Light", "Medium", "Heavy", "Shields"];
     let selection = MultiSelect::new()
         .with_prompt("Please select proficiencies (Space to select, Enter to confirm)")
         .items(&items)
