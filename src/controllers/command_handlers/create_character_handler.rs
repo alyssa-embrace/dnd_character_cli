@@ -46,7 +46,7 @@ fn create_character() -> Character {
     let description = inputs::show_description_editor();
 
     let proficiencies: Vec<String> = inputs::show_proficiency_dialog();
-    let attacks: Vec<String> = Vec::new();
+    let attacks: Vec<String> = Vec::new(); // TODO: Implement attack component of character creation
 
     Character::new(name, description, ability_scores, proficiency_bonus, 
         hitpoints, armor_class, speed, initiative_bonus, proficiencies, attacks)
