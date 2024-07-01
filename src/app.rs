@@ -1,12 +1,12 @@
-use std::io::{self, Stdout};
+pub mod context;
+
+use std::{io::{self, Stdout}, rc::Rc, sync::Arc};
+use context::Context;
 use ratatui::{
-    crossterm::event::{self, Event, KeyCode, KeyEvent, KeyEventKind},
-    prelude::CrosstermBackend,
-    widgets::Widget,
-    Frame,
+    crossterm::event::{self, Event, KeyCode, KeyEvent, KeyEventKind}, layout::{Constraint, Direction, Layout, Rect}, prelude::CrosstermBackend, widgets::Widget, Frame
 };
 use crate::{models::character::Character, views::{
-    character_wizard::CharacterWizard,
+    character_wizard::{character_editor_widget::CharacterEditorWidget, character_list_widget::CharacterListWidget, character_src_widget::CharacterSrcWidget, character_wizard_layout::calc_character_wizard_layouts, CharacterWizard},
     initiative_wizard::InitiativeWizard,
 }};
 
@@ -29,15 +29,25 @@ pub struct App {
 }
 
 impl App {
-    pub fn default() -> Self {
+    pub fn default(arc_context: Arc<Context>) -> Self {
         App {
             app_mode: AppMode::CharacterWizard,
             input_mode: InputMode::Control,
             should_exit: false,
             character_wizard: CharacterWizard {
-                src_directories: vec![],
+                character_src_widget: CharacterSrcWidget {
+                    arc_context: arc_context.clone(),
+                },
+                character_list_widget: CharacterListWidget {
+                    arc_context: arc_context.clone(),
+                },
+                character_editor_widget: CharacterEditorWidget {
+                    arc_context: arc_context.clone(),
+                },
+            
             },
             initiative_wizard: InitiativeWizard {},
+            
         }
     }
 
@@ -52,10 +62,19 @@ impl App {
 
     fn render_frame(&self, frame: &mut Frame) {
         match self.app_mode {
-            AppMode::CharacterWizard => frame.render_widget(&self.character_wizard, frame.size()),
+            AppMode::CharacterWizard => self.render_character_wizard_frame(frame),
             AppMode::InitiativeWizard => frame.render_widget(&self.initiative_wizard, frame.size()),
-        }
-        
+        }   
+    }
+
+    fn render_character_wizard_frame(&self, frame: &mut Frame) {
+        let layout_chunks = calc_character_wizard_layouts(frame);
+        let left_inner_layout = &layout_chunks[1];
+        let right_inner_layout = &layout_chunks[2];
+
+        frame.render_widget(&self.character_wizard.character_src_widget, left_inner_layout[0]);
+        frame.render_widget(&self.character_wizard.character_list_widget, left_inner_layout[1]);
+        frame.render_widget(&self.character_wizard.character_editor_widget, right_inner_layout[0]);
     }
 
     fn handle_events(&mut self) -> io::Result<()> {
@@ -71,9 +90,8 @@ impl App {
     fn handle_key_event(&mut self, event: KeyEvent) {
         match self.input_mode {
             InputMode::Control => match event.code {
-                KeyCode::Char('q') => self.markShouldExit(),
+                KeyCode::Char('q') => self.mark_should_exit(),
                 KeyCode::Tab => self.change_mode(),
-                KeyCode::Char('i') => self.app_mode = AppMode::InitiativeWizard,
                 _ => {},
             },
             InputMode::TextInput => todo!(),
@@ -81,7 +99,7 @@ impl App {
         
     }
 
-    fn markShouldExit(&mut self) {
+    fn mark_should_exit(&mut self) {
         self.should_exit = true;
     }
 

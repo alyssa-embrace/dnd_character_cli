@@ -1,19 +1,14 @@
-use ratatui::{
-    layout::Alignment, prelude::{Buffer, Rect}, style::Stylize, symbols::border, widgets::{
-        block::Title, Block, Widget
-    }
+pub mod character_wizard_layout;
+pub mod character_list_widget;
+pub mod character_src_widget;
+pub mod character_editor_widget;
+
+use {
+    character_editor_widget::CharacterEditorWidget, character_list_widget::CharacterListWidget, character_src_widget::CharacterSrcWidget, std::sync::Arc
 };
 
 pub struct CharacterWizard {
-    pub src_directories: Vec<String>,
-}
-
-impl Widget for &CharacterWizard {
-    fn render(self, area: Rect, buf: &mut Buffer) {
-        let title = Title::from(" Character Wizard ".bold());
-        Block::bordered()
-            .title(title.alignment(Alignment::Center))
-            .border_set(border::THICK)
-            .render(area, buf);
-    }
+    pub character_src_widget: CharacterSrcWidget,
+    pub character_list_widget: CharacterListWidget,
+    pub character_editor_widget: CharacterEditorWidget,
 }

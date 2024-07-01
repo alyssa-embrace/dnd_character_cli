@@ -1,17 +1,21 @@
+use std::sync::Arc;
+
+use app::context::Context;
 use clap::Parser;
 use controllers::command_handlers;
 use models::cli::{CliArgs, Command};
-use crate::app_runner::App;
+use crate::app::App;
 
 mod views;
 mod controllers;
 mod models;
-mod app_runner;
+mod app;
 
 fn main() -> color_eyre::Result<()> {
     views::error_hooks::install_hooks()?;
     let mut terminal = views::tui_setup::init()?;
-    let mut app = App::default();
+    let arc_context = Arc::<Context>::new(Context::new());
+    let mut app = App::default(arc_context);
     app.run(&mut terminal)?;
     
     /*
