@@ -1,5 +1,3 @@
-use std::sync::Arc;
-
 use app::context::Context;
 use clap::Parser;
 use controllers::command_handlers;
@@ -14,8 +12,8 @@ mod app;
 fn main() -> color_eyre::Result<()> {
     views::error_hooks::install_hooks()?;
     let mut terminal = views::tui_setup::init()?;
-    let arc_context = Arc::<Context>::new(Context::new());
-    let mut app = App::default(arc_context);
+    let context = Context::new();
+    let mut app = App::default(&context);
     app.run(&mut terminal)?;
     
     /*

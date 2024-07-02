@@ -1,5 +1,3 @@
-use std::sync::Arc;
-
 use ratatui::{
     buffer::Buffer, 
     style::Stylize, 
@@ -10,11 +8,11 @@ use ratatui::{
 
 use crate::app::context::Context;
 
-pub struct CharacterSrcWidget {
-    pub arc_context: Arc<Context>,
+pub struct CharacterSrcWidget<'a> {
+    pub ref_context: &'a Context,
 }
 
-impl Widget for &CharacterSrcWidget {
+impl Widget for &CharacterSrcWidget<'_> {
     fn render(self, area: Rect, buf: &mut Buffer) {
         let title = Title::from(" Character File Sources ".bold());
         Block::bordered()

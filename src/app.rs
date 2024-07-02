@@ -20,34 +20,35 @@ enum InputMode {
     TextInput,
 }
 
-pub struct App {
+pub struct App<'a> {
     app_mode: AppMode,
     input_mode: InputMode,
     should_exit: bool,
-    character_wizard: CharacterWizard,
+    ref_context: &'a mut Context,
+    character_wizard: CharacterWizard<'a>,
     initiative_wizard: InitiativeWizard,
 }
 
-impl App {
-    pub fn default(arc_context: Arc<Context>) -> Self {
+impl<'a> App<'a> {
+    pub fn default(context: &'a mut Context) -> Self {
         App {
             app_mode: AppMode::CharacterWizard,
             input_mode: InputMode::Control,
             should_exit: false,
+            ref_context: context,
             character_wizard: CharacterWizard {
                 character_src_widget: CharacterSrcWidget {
-                    arc_context: arc_context.clone(),
+                    ref_context: context,
                 },
                 character_list_widget: CharacterListWidget {
-                    arc_context: arc_context.clone(),
+                    ref_context: context,
                 },
                 character_editor_widget: CharacterEditorWidget {
-                    arc_context: arc_context.clone(),
+                    ref_context: context,
                 },
             
             },
             initiative_wizard: InitiativeWizard {},
-            
         }
     }
 
@@ -73,7 +74,7 @@ impl App {
         let right_inner_layout = &layout_chunks[2];
 
         frame.render_widget(&self.character_wizard.character_src_widget, left_inner_layout[0]);
-        frame.render_widget(&self.character_wizard.character_list_widget, left_inner_layout[1]);
+        frame.render_stateful_widget(&self.character_wizard.character_list_widget, left_inner_layout[1], &mut self.ref_context.dir_list.state);
         frame.render_widget(&self.character_wizard.character_editor_widget, right_inner_layout[0]);
     }
 
