@@ -1,14 +1,14 @@
 pub mod context;
 
-use std::{io::{self, Stdout}, rc::Rc, sync::Arc};
+use std::io::{self, Stdout};
 use context::Context;
 use ratatui::{
-    crossterm::event::{self, Event, KeyCode, KeyEvent, KeyEventKind}, layout::{Constraint, Direction, Layout, Rect}, prelude::CrosstermBackend, widgets::Widget, Frame
+    crossterm::event::{self, Event, KeyCode, KeyEvent, KeyEventKind}, layout::{Constraint, Direction, Layout, Rect}, prelude::CrosstermBackend, Frame
 };
-use crate::{models::character::Character, views::{
+use crate::views::{
     character_wizard::{character_editor_widget::CharacterEditorWidget, character_list_widget::CharacterListWidget, character_src_widget::CharacterSrcWidget, character_wizard_layout::calc_character_wizard_layouts, CharacterWizard},
     initiative_wizard::InitiativeWizard,
-}};
+};
 
 enum AppMode {
     CharacterWizard,
@@ -25,7 +25,7 @@ pub struct App<'a> {
     input_mode: InputMode,
     should_exit: bool,
     ref_context: &'a mut Context,
-    character_wizard: CharacterWizard<'a>,
+    character_wizard: CharacterWizard,
     initiative_wizard: InitiativeWizard,
 }
 
@@ -37,16 +37,9 @@ impl<'a> App<'a> {
             should_exit: false,
             ref_context: context,
             character_wizard: CharacterWizard {
-                character_src_widget: CharacterSrcWidget {
-                    ref_context: context,
-                },
-                character_list_widget: CharacterListWidget {
-                    ref_context: context,
-                },
-                character_editor_widget: CharacterEditorWidget {
-                    ref_context: context,
-                },
-            
+                character_src_widget: CharacterSrcWidget {},
+                character_list_widget: CharacterListWidget {},
+                character_editor_widget: CharacterEditorWidget {},
             },
             initiative_wizard: InitiativeWizard {},
         }
@@ -61,20 +54,20 @@ impl<'a> App<'a> {
         Ok(())
     }
 
-    fn render_frame(&self, frame: &mut Frame) {
+    fn render_frame(&mut self, frame: &mut Frame) {
         match self.app_mode {
             AppMode::CharacterWizard => self.render_character_wizard_frame(frame),
             AppMode::InitiativeWizard => frame.render_widget(&self.initiative_wizard, frame.size()),
         }   
     }
 
-    fn render_character_wizard_frame(&self, frame: &mut Frame) {
+    fn render_character_wizard_frame(&mut self, frame: &mut Frame) {
         let layout_chunks = calc_character_wizard_layouts(frame);
         let left_inner_layout = &layout_chunks[1];
         let right_inner_layout = &layout_chunks[2];
 
         frame.render_widget(&self.character_wizard.character_src_widget, left_inner_layout[0]);
-        frame.render_stateful_widget(&self.character_wizard.character_list_widget, left_inner_layout[1], &mut self.ref_context.dir_list.state);
+        frame.render_stateful_widget(&self.character_wizard.character_list_widget, left_inner_layout[1], &mut self.ref_context.dir_list);
         frame.render_widget(&self.character_wizard.character_editor_widget, right_inner_layout[0]);
     }
 
@@ -91,13 +84,21 @@ impl<'a> App<'a> {
     fn handle_key_event(&mut self, event: KeyEvent) {
         match self.input_mode {
             InputMode::Control => match event.code {
-                KeyCode::Char('q') => self.mark_should_exit(),
-                KeyCode::Tab => self.change_mode(),
-                _ => {},
+                //KeyCode::Esc => self.mark_should_exit(),
+                KeyCode::F(1) => self.change_mode(),
+                _ => match self.app_mode {
+                    AppMode::CharacterWizard => self.character_wizard.handle_key_event(event.code),
+                    AppMode::InitiativeWizard => todo!(),
+                }
             },
-            InputMode::TextInput => todo!(),
+            InputMode::TextInput =>  match event.code {
+                KeyCode::F(1) => self.change_mode(),
+                _ => match self.app_mode {
+                    AppMode::CharacterWizard => self.character_wizard.handle_key_event(event.code),
+                    AppMode::InitiativeWizard => todo!(),
+                }
+            },
         }
-        
     }
 
     fn mark_should_exit(&mut self) {

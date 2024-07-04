@@ -12,8 +12,8 @@ mod app;
 fn main() -> color_eyre::Result<()> {
     views::error_hooks::install_hooks()?;
     let mut terminal = views::tui_setup::init()?;
-    let context = Context::new();
-    let mut app = App::default(&context);
+    let mut context = Context::new();
+    let mut app = App::default(&mut context);
     app.run(&mut terminal)?;
     
     /*

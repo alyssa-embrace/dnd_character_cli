@@ -8,11 +8,11 @@ use ratatui::{
 
 use crate::app::context::Context;
 
-pub struct CharacterEditorWidget<'a> {
-    pub ref_context: &'a Context,
+pub struct CharacterEditorWidget {
+    //pub ref_context: &'a Context,
 }
 
-impl Widget for &CharacterEditorWidget<'_> {
+impl Widget for &CharacterEditorWidget {
     fn render(self, area: Rect, buf: &mut Buffer) {
         let title = Title::from(" Character Editor ".bold());
         Block::bordered()
