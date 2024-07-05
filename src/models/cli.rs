@@ -6,11 +6,11 @@ use clap::{Args, Parser, Subcommand};
 pub struct CliArgs {
     /// The command to run
     #[command(subcommand)]
-    pub command: Command,
+    pub command: CliCommand,
 }
 
 #[derive(Subcommand, Debug)]
-pub enum Command {
+pub enum CliCommand {
     CreateCharacter(CreateArgs),
     ModifyCharacter(ModifyCharArgs),
     DeleteCharacter(DeleteArgs),

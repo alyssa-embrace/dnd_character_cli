@@ -6,6 +6,7 @@ use ratatui::{
     widgets::{block::Title, Block, Widget}
 };
 
+#[derive(Copy, Clone)]
 pub struct CharacterSrcWidget;
 
 impl Widget for &CharacterSrcWidget {
@@ -19,7 +20,7 @@ impl Widget for &CharacterSrcWidget {
 }
 
 impl CharacterSrcWidget {
-    pub fn  add_src_directory() {
+    pub fn show_add_src_dialog(self) {
         
     }
 }

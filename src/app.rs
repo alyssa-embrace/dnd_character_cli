@@ -15,6 +15,11 @@ enum AppMode {
     InitiativeWizard,
 }
 
+enum AppCommand {
+    ChangeMode,
+    SignalEscape,
+}
+
 #[derive(Clone)]
 pub enum InputMode {
     Control,
@@ -86,24 +91,32 @@ impl<'a> App<'a> {
 
     fn handle_key_event(&mut self, event: KeyEvent) {
         match event.code {
-            KeyCode::Esc => {
-                if let Some(handler) = &self.escape_handler {
-                    handler();
-                } else {
-                    self.mark_should_exit();
-                }
-            },
-            KeyCode::F(1) => self.change_mode(),
-            _ => match self.app_mode {
-                AppMode::CharacterWizard => 
-                    self.character_wizard.handle_key_event(event.code, self.input_mode.clone()),
-                AppMode::InitiativeWizard => todo!(),
-            }
+            KeyCode::Esc => self.handle_command(AppCommand::SignalEscape),
+            KeyCode::F(1) => self.handle_command(AppCommand::ChangeMode),
+            _ => self.forward_key_event(event)
         }
     }
 
-    fn mark_should_exit(&mut self) {
-        self.should_exit = true;
+    fn handle_command(&mut self, command: AppCommand) {
+        match command {
+            AppCommand::ChangeMode => self.change_mode(),
+            AppCommand::SignalEscape => self.signal_escape(),
+        }
+    }
+
+    fn forward_key_event(&mut self, event: KeyEvent) {
+        match self.app_mode {
+            AppMode::CharacterWizard => self.character_wizard.handle_key_event(event.code, self.input_mode.clone()),
+            AppMode::InitiativeWizard => todo!(),
+        }
+    }
+
+    fn signal_escape(&mut self) {
+        if let Some(handler) = &self.escape_handler {
+            handler();
+        } else {
+            self.should_exit = true;
+        }
     }
 
     fn change_mode(&mut self) {

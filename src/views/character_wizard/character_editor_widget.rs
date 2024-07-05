@@ -6,6 +6,7 @@ use ratatui::{
     widgets::{block::Title, Block, Widget}
 };
 
+#[derive(Copy, Clone)]
 pub struct CharacterEditorWidget;
 
 impl Widget for &CharacterEditorWidget {

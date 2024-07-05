@@ -7,6 +7,7 @@ edition = "2021"
 [dependencies]
 clap = { version = "4.5.7", features = ["derive"] }
 color-eyre = "0.6.3"
+config = "0.14.0"
 dialoguer = { version = "0.11.0", features = ["editor"] }
 ratatui = "0.27.0"
 serde = { version = "1.0.203", features = ["derive"] }
