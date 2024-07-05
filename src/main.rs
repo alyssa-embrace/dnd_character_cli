@@ -1,4 +1,4 @@
-use app::context::Context;
+use app::{context::Context, AppMode};
 use clap::Parser;
 use controllers::command_handlers;
 use models::cli::{CliArgs, CliCommand};
@@ -10,13 +10,7 @@ mod models;
 mod app;
 
 
-fn main() -> color_eyre::Result<()> {
-    views::error_hooks::install_hooks()?;
-    let mut terminal = views::tui_setup::init()?;
-    let mut context = Context::new();
-    let mut app = App::default(&mut context);
-    app.run(&mut terminal)?;
-    
+fn main() -> color_eyre::Result<()> {    
     /*
      What's the ideal shape of the app?
      Let's think about this for a bit.
@@ -27,11 +21,12 @@ fn main() -> color_eyre::Result<()> {
      So that multi-execution isn't necessary.
      */
 
-    views::tui_setup::restore()?;
-
     let args: CliArgs = CliArgs::parse();
 
     match args.command {
+        CliCommand::EditSrcConfig => todo!(),
+        CliCommand::CharacterWizard => run_app(AppMode::CharacterWizard)?,
+        CliCommand::InitiativeWizard => run_app(AppMode::InitiativeWizard)?,
         CliCommand::CreateCharacter(create_args) => 
             command_handlers::create_character_handler::handle(&create_args),
         CliCommand::ModifyCharacter(modify_args) => 
@@ -46,5 +41,16 @@ fn main() -> color_eyre::Result<()> {
             command_handlers::delete_handler::handle(&delete_args),
     }
 
+    Ok(())
+}
+
+fn run_app(app_mode: AppMode) -> color_eyre::Result<()>{
+    views::error_hooks::install_hooks()?;
+    let mut terminal = views::tui_setup::init()?;
+    let mut context = Context::new();
+    let mut app = App::default(&mut context);
+    app.app_mode = app_mode;
+    app.run(&mut terminal)?;
+    views::tui_setup::restore()?;
     Ok(())
 }

@@ -1,43 +1,74 @@
 pub mod character_wizard_layout;
 pub mod character_list_widget;
-pub mod character_src_widget;
 pub mod character_editor_widget;
 
 use {
-    crate::app::InputMode, character_editor_widget::CharacterEditorWidget, character_list_widget::CharacterListWidget, character_src_widget::CharacterSrcWidget, ratatui::crossterm::event::KeyCode, std::sync::Arc
+    crate::app::context::{CharacterList, Context}, character_editor_widget::CharacterEditorWidget, character_list_widget::CharacterListWidget, character_wizard_layout::calc_character_wizard_layouts, ratatui::{buffer::Buffer, crossterm::event::KeyCode, layout::Rect, widgets::{StatefulWidget, Widget}}, std::sync::Arc
 };
 
 #[derive(Copy, Clone)]
+enum InputMode {
+    Control,
+    Editing,
+    TextInput,
+}
+
+#[derive(Copy, Clone)]
 pub struct CharacterWizard {
-    pub character_src_widget: CharacterSrcWidget,
+    input_mode: InputMode,
     pub character_list_widget: CharacterListWidget,
     pub character_editor_widget: CharacterEditorWidget,
 }
 
-pub enum CharacterWizardCommand {
-    AddSrcDirectory,
+enum CharacterWizardCommand {
+    AddCharacter,
+    EditCharacter,
+    DeleteCharacter,
+}
+
+impl StatefulWidget for &CharacterWizard {
+    type State = Context;
+
+    fn render(self, _area: Rect, _buf: &mut Buffer, _state: &mut Self::State) {
+        let layout_chunks = calc_character_wizard_layouts(&_area);
+
+        StatefulWidget::render(&self.character_list_widget, 
+            layout_chunks[0], _buf, &mut _state.dir_list);
+        Widget::render(&self.character_editor_widget, layout_chunks[1], _buf)
+    }
 }
 
 impl CharacterWizard {
-    pub fn handle_key_event(&mut self, key_code: KeyCode, input_mode: InputMode) {
-        match input_mode {
+    pub fn new() -> Self {
+        CharacterWizard {
+            input_mode: InputMode::Control,
+            character_list_widget: CharacterListWidget {},
+            character_editor_widget: CharacterEditorWidget {},
+        }
+    }
+
+    pub fn handle_key_event(&mut self, key_code: KeyCode, _state: &mut Context) {
+        match self.input_mode {
             InputMode::Control => match key_code 
             {
-                KeyCode::F(2) => {
-                    self.handle_command(CharacterWizardCommand::AddSrcDirectory);
-                }
+                KeyCode::Up => _state.dir_list.previous(),
+                KeyCode::Down => _state.dir_list.next(),
+                KeyCode::Enter => todo!(),
                 _ => {}
-            }
-        ,
+            },
+            InputMode::Editing => todo!(),
             InputMode::TextInput => todo!(),
         }
     }
 
-    fn handle_command(self, command: CharacterWizardCommand) {
-        match command {
-            CharacterWizardCommand::AddSrcDirectory => {
-                self.character_src_widget.show_add_src_dialog();
-            }
+    fn enable_character_edit(char_list: CharacterList) {
+        if let Some(char_file) = char_list.get_selected_character_file() {
+            // Open the file in the editor
+            todo!()
         }
+    }
+
+    fn change_mode(&mut self, mode: InputMode) {
+        self.input_mode = mode;
     }
 }

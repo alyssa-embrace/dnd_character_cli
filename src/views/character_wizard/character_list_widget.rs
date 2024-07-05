@@ -2,21 +2,21 @@ use ratatui::{
     buffer::Buffer, layout::{Alignment, Rect}, style::{Modifier, Style, Stylize}, symbols::border, widgets::{block::Title, Block, Borders, HighlightSpacing, List, ListItem, ListState, Paragraph, StatefulWidget, Widget}
 };
 
-use crate::app::context::DirectoryList;
+use crate::app::context::CharacterList;
 
 #[derive(Copy, Clone)]
 pub struct CharacterListWidget;
 
 impl StatefulWidget for &CharacterListWidget {
-    type State = DirectoryList;
-    
+    type State = CharacterList;
+
     fn render(self, area: Rect, buf: &mut Buffer, state: &mut Self::State) {
         self.render_list(area, buf, state);
     }
 }
 
 impl CharacterListWidget {
-    fn render_list(self, area: Rect, buf: &mut Buffer, state: &mut DirectoryList) {
+    fn render_list(self, area: Rect, buf: &mut Buffer, state: &mut CharacterList) {
         let title = Title::from(" Character List ".bold());
         let outer_block= Block::new()
             .borders(Borders::ALL)

@@ -11,6 +11,9 @@ pub struct CliArgs {
 
 #[derive(Subcommand, Debug)]
 pub enum CliCommand {
+    EditSrcConfig,
+    CharacterWizard,
+    InitiativeWizard,
     CreateCharacter(CreateArgs),
     ModifyCharacter(ModifyCharArgs),
     DeleteCharacter(DeleteArgs),
