@@ -15,7 +15,8 @@ enum AppMode {
     InitiativeWizard,
 }
 
-enum InputMode {
+#[derive(Clone)]
+pub enum InputMode {
     Control,
     TextInput,
 }
@@ -27,6 +28,7 @@ pub struct App<'a> {
     ref_context: &'a mut Context,
     character_wizard: CharacterWizard,
     initiative_wizard: InitiativeWizard,
+    escape_handler: Option<Box<dyn Fn()>>,
 }
 
 impl<'a> App<'a> {
@@ -41,6 +43,7 @@ impl<'a> App<'a> {
                 character_list_widget: CharacterListWidget {},
                 character_editor_widget: CharacterEditorWidget {},
             },
+            escape_handler: None,
             initiative_wizard: InitiativeWizard {},
         }
     }
@@ -82,22 +85,20 @@ impl<'a> App<'a> {
     }
 
     fn handle_key_event(&mut self, event: KeyEvent) {
-        match self.input_mode {
-            InputMode::Control => match event.code {
-                //KeyCode::Esc => self.mark_should_exit(),
-                KeyCode::F(1) => self.change_mode(),
-                _ => match self.app_mode {
-                    AppMode::CharacterWizard => self.character_wizard.handle_key_event(event.code),
-                    AppMode::InitiativeWizard => todo!(),
+        match event.code {
+            KeyCode::Esc => {
+                if let Some(handler) = &self.escape_handler {
+                    handler();
+                } else {
+                    self.mark_should_exit();
                 }
             },
-            InputMode::TextInput =>  match event.code {
-                KeyCode::F(1) => self.change_mode(),
-                _ => match self.app_mode {
-                    AppMode::CharacterWizard => self.character_wizard.handle_key_event(event.code),
-                    AppMode::InitiativeWizard => todo!(),
-                }
-            },
+            KeyCode::F(1) => self.change_mode(),
+            _ => match self.app_mode {
+                AppMode::CharacterWizard => 
+                    self.character_wizard.handle_key_event(event.code, self.input_mode.clone()),
+                AppMode::InitiativeWizard => todo!(),
+            }
         }
     }
 

@@ -5,11 +5,11 @@ use ratatui::{
 use crate::app::context::DirectoryList;
 
 #[derive(Copy, Clone)]
-pub struct CharacterListWidget {
-}
+pub struct CharacterListWidget;
 
 impl StatefulWidget for &CharacterListWidget {
     type State = DirectoryList;
+    
     fn render(self, area: Rect, buf: &mut Buffer, state: &mut Self::State) {
         self.render_list(area, buf, state);
     }

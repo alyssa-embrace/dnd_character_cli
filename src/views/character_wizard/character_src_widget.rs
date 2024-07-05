@@ -6,7 +6,7 @@ use ratatui::{
     widgets::{block::Title, Block, Widget}
 };
 
-pub struct CharacterSrcWidget {}
+pub struct CharacterSrcWidget;
 
 impl Widget for &CharacterSrcWidget {
     fn render(self, area: Rect, buf: &mut Buffer) {
@@ -15,5 +15,11 @@ impl Widget for &CharacterSrcWidget {
             .title(title.alignment(Alignment::Center))
             .border_set(border::THICK)
             .render(area, buf);
+    }
+}
+
+impl CharacterSrcWidget {
+    pub fn  add_src_directory() {
+        
     }
 }

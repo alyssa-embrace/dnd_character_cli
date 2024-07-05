@@ -4,7 +4,6 @@ use std::fs;
 #[derive(Clone)]
 pub struct Context {
     pub dir_list: DirectoryList,
-    pub esc_handler: Option<Fn() -> ()>,
 }
 
 #[derive(Clone)]

@@ -6,11 +6,7 @@ use ratatui::{
     widgets::{block::Title, Block, Widget}
 };
 
-use crate::app::context::Context;
-
-pub struct CharacterEditorWidget {
-    //pub ref_context: &'a Context,
-}
+pub struct CharacterEditorWidget;
 
 impl Widget for &CharacterEditorWidget {
     fn render(self, area: Rect, buf: &mut Buffer) {
