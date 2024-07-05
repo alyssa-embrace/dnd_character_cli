@@ -2,13 +2,13 @@ use ratatui::{
     buffer::Buffer, layout::{Alignment, Rect}, style::{Modifier, Style, Stylize}, symbols::border, widgets::{block::Title, Block, Borders, HighlightSpacing, List, ListItem, ListState, Paragraph, StatefulWidget, Widget}
 };
 
-use crate::app::context::CharacterList;
+use crate::app::context::FileList;
 
 #[derive(Copy, Clone)]
 pub struct CharacterListWidget;
 
 impl StatefulWidget for &CharacterListWidget {
-    type State = CharacterList;
+    type State = FileList;
 
     fn render(self, area: Rect, buf: &mut Buffer, state: &mut Self::State) {
         self.render_list(area, buf, state);
@@ -16,7 +16,7 @@ impl StatefulWidget for &CharacterListWidget {
 }
 
 impl CharacterListWidget {
-    fn render_list(self, area: Rect, buf: &mut Buffer, state: &mut CharacterList) {
+    fn render_list(self, area: Rect, buf: &mut Buffer, state: &mut FileList) {
         let title = Title::from(" Character List ".bold());
         let outer_block= Block::new()
             .borders(Borders::ALL)
@@ -24,7 +24,7 @@ impl CharacterListWidget {
             .border_set(border::THICK);
         
         let inner_area = outer_block.inner(area);
-        let items: Vec<ListItem> = state.directories.iter()
+        let items: Vec<ListItem> = state.files.iter()
             .enumerate().map(|(i, character_file)| {
                 ListItem::new(character_file.clone())
             }).collect();

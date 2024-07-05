@@ -1,5 +1,8 @@
+use std::collections::HashMap;
+
 use app::{context::Context, AppMode};
 use clap::Parser;
+use config::Config;
 use controllers::command_handlers;
 use models::cli::{CliArgs, CliCommand};
 use crate::app::App;
@@ -21,12 +24,19 @@ fn main() -> color_eyre::Result<()> {
      So that multi-execution isn't necessary.
      */
 
+    let settings = Config::builder()
+        .add_source(config::File::with_name("dnd_tui_config"))
+        .add_source(config::Environment::with_prefix("APP"))
+        .build()?;
+
+    let settings = settings.try_deserialize::<HashMap<String, String>>()?;
+
     let args: CliArgs = CliArgs::parse();
 
     match args.command {
         CliCommand::EditSrcConfig => todo!(),
-        CliCommand::CharacterWizard => run_app(AppMode::CharacterWizard)?,
-        CliCommand::InitiativeWizard => run_app(AppMode::InitiativeWizard)?,
+        CliCommand::CharacterWizard => run_app(AppMode::CharacterWizard, settings)?,
+        CliCommand::InitiativeWizard => run_app(AppMode::InitiativeWizard, settings)?,
         CliCommand::CreateCharacter(create_args) => 
             command_handlers::create_character_handler::handle(&create_args),
         CliCommand::ModifyCharacter(modify_args) => 
@@ -44,10 +54,10 @@ fn main() -> color_eyre::Result<()> {
     Ok(())
 }
 
-fn run_app(app_mode: AppMode) -> color_eyre::Result<()>{
+fn run_app(app_mode: AppMode, settings: HashMap<String, String>) -> color_eyre::Result<()>{
     views::error_hooks::install_hooks()?;
     let mut terminal = views::tui_setup::init()?;
-    let mut context = Context::new();
+    let mut context = Context::new(settings);
     let mut app = App::default(&mut context);
     app.app_mode = app_mode;
     app.run(&mut terminal)?;

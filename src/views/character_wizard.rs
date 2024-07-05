@@ -3,7 +3,7 @@ pub mod character_list_widget;
 pub mod character_editor_widget;
 
 use {
-    crate::app::context::{CharacterList, Context}, character_editor_widget::CharacterEditorWidget, character_list_widget::CharacterListWidget, character_wizard_layout::calc_character_wizard_layouts, ratatui::{buffer::Buffer, crossterm::event::KeyCode, layout::Rect, widgets::{StatefulWidget, Widget}}, std::sync::Arc
+    crate::app::context::{FileList, Context}, character_editor_widget::CharacterEditorWidget, character_list_widget::CharacterListWidget, character_wizard_layout::calc_character_wizard_layouts, ratatui::{buffer::Buffer, crossterm::event::KeyCode, layout::Rect, widgets::{StatefulWidget, Widget}}, std::sync::Arc
 };
 
 #[derive(Copy, Clone)]
@@ -33,7 +33,7 @@ impl StatefulWidget for &CharacterWizard {
         let layout_chunks = calc_character_wizard_layouts(&_area);
 
         StatefulWidget::render(&self.character_list_widget, 
-            layout_chunks[0], _buf, &mut _state.dir_list);
+            layout_chunks[0], _buf, &mut _state.char_list);
         Widget::render(&self.character_editor_widget, layout_chunks[1], _buf)
     }
 }
@@ -51,9 +51,9 @@ impl CharacterWizard {
         match self.input_mode {
             InputMode::Control => match key_code 
             {
-                KeyCode::Up => _state.dir_list.previous(),
-                KeyCode::Down => _state.dir_list.next(),
-                KeyCode::Enter => todo!(),
+                KeyCode::Up => _state.char_list.previous(),
+                KeyCode::Down => _state.char_list.next(),
+                KeyCode::Enter => self.enable_character_edit(_state.char_list.clone()),
                 _ => {}
             },
             InputMode::Editing => todo!(),
@@ -61,7 +61,7 @@ impl CharacterWizard {
         }
     }
 
-    fn enable_character_edit(char_list: CharacterList) {
+    fn enable_character_edit(self, char_list: FileList) {
         if let Some(char_file) = char_list.get_selected_character_file() {
             // Open the file in the editor
             todo!()

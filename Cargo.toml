@@ -1,5 +1,5 @@
 [package]
-name = "dnd_character_cli"
+name = "dnd_character_tui"
 version = "0.1.0"
 about = "A CLI for managing D&D characters"
 edition = "2021"
