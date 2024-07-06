@@ -10,20 +10,23 @@ pub struct Context {
 
 impl Context {
     pub fn new(settings: HashMap<String, String>) -> Self {
-        Context {
-            char_list: FileList::new(),
-            ability_list: FileList::new(),
+        let char_src = settings.get("character_source_directory").unwrap().clone();
+        let ability_src = settings.get("ability_source_directory").unwrap().clone();
+        let context = Context {
+            char_list: FileList::new(char_src),
+            ability_list: FileList::new(ability_src),
             settings: settings,
-        }
+        };
+        context
     }
 
-    pub fn get_character_src(&self) -> Option<&String> {
-        self.settings.get("character_source_directory")
-    }
+    // pub fn get_character_src(&self) -> Option<&String> {
+    //     self.settings.get("character_source_directory")
+    // }
 
-    pub fn get_ability_src(&self) -> Option<&String> {
-        self.settings.get("ability_source_directory")
-    }
+    // pub fn get_ability_src(&self) -> Option<&String> {
+    //     self.settings.get("ability_source_directory")
+    // }
 }
 
 #[derive(Clone)]
@@ -33,14 +36,10 @@ pub struct FileList {
 }
 
 impl FileList {
-    pub fn new () -> Self {
+    pub fn new (src: String) -> Self {
         let mut char_list = FileList {
             state: ListState::default(),
-            files: vec![
-                    "/mnt/c/Users/username/characters".to_string(),
-                    "/mnt/c/Users/username/encounters".to_string(),
-                    "/mnt/c/Users/username/maps".to_string(),
-                ],
+            files: vec![],
         };
         char_list.state.select_first();
         char_list
