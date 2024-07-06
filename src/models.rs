@@ -1,4 +1,4 @@
 pub mod statistics;
-pub mod attack;
+pub mod ability;
 pub mod character;
 pub mod cli;

@@ -57,9 +57,9 @@ fn modify (character: &Character, args: &ModifyCharArgs) -> Character {
     if args.description {
         new_character.description = inputs::show_description_editor();
     }
-    if args.attacks {
+    if args.abilities {
         // TODO: Implement attack modification
-        new_character.attacks = vec![];
+        new_character.abilities = vec![];
     }
     if args.proficiencies {
         new_character.proficiencies = inputs::show_proficiency_dialog();

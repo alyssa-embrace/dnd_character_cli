@@ -5,7 +5,25 @@ use std::{collections::HashMap, fs};
 pub struct Context {
     pub settings: HashMap<String, String>,
     pub char_list: FileList,
-    pub attack_list: FileList,
+    pub ability_list: FileList,
+}
+
+impl Context {
+    pub fn new(settings: HashMap<String, String>) -> Self {
+        Context {
+            char_list: FileList::new(),
+            ability_list: FileList::new(),
+            settings: settings,
+        }
+    }
+
+    pub fn get_character_src(&self) -> Option<&String> {
+        self.settings.get("character_source_directory")
+    }
+
+    pub fn get_ability_src(&self) -> Option<&String> {
+        self.settings.get("ability_source_directory")
+    }
 }
 
 #[derive(Clone)]
@@ -48,15 +66,5 @@ impl FileList {
 
     pub fn get_selected_character_file(self) -> Option<String> {
         self.state.selected().map(|i| self.files[i].clone())
-    }
-}
-
-impl Context {
-    pub fn new(settings: HashMap<String, String>) -> Self {
-        Context {
-            char_list: FileList::new(),
-            attack_list: FileList::new(),
-            settings: settings,
-        }
     }
 }

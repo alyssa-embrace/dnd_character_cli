@@ -15,7 +15,7 @@ pub struct Character {
     pub speed: u8,
     pub initiative_bonus: i8,
     pub proficiencies: Vec<String>,
-    pub attacks: Vec<String>,
+    pub abilities: Vec<String>,
 }
 
 impl Character {
@@ -28,7 +28,7 @@ impl Character {
         speed: u8, 
         initiative_bonus: i8,
         proficiencies: Vec<String>,
-        attacks: Vec<String> ) -> Character {
+        abilities: Vec<String> ) -> Character {
         Character {
             name,
             description,
@@ -39,7 +39,7 @@ impl Character {
             speed,
             initiative_bonus,
             proficiencies,
-            attacks
+            abilities
         }
     }
 

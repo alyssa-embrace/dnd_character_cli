@@ -43,11 +43,11 @@ fn main() -> color_eyre::Result<()> {
             command_handlers::modify_character_handler::handle(&modify_args),
         CliCommand::DeleteCharacter(delete_args) =>
             command_handlers::delete_handler::handle(&delete_args),
-        CliCommand::CreateAttack(create_args) => 
-            command_handlers::create_attack_handler::handle(&create_args),
-        CliCommand::ModifyAttack(modify_args) => 
-            command_handlers::modify_attack_handler::handle(&modify_args),
-        CliCommand::DeleteAttack(delete_args) => 
+        CliCommand::CreateAbility(create_args) => 
+            command_handlers::create_ability_handler::handle(&create_args),
+        CliCommand::ModifyAbility(modify_args) => 
+            command_handlers::modify_ability_handler::handle(&modify_args),
+        CliCommand::DeleteAbility(delete_args) => 
             command_handlers::delete_handler::handle(&delete_args),
     }
 

@@ -17,9 +17,9 @@ pub enum CliCommand {
     CreateCharacter(CreateArgs),
     ModifyCharacter(ModifyCharArgs),
     DeleteCharacter(DeleteArgs),
-    CreateAttack(CreateArgs),
-    ModifyAttack(ModifyAttackArgs),
-    DeleteAttack(DeleteArgs),
+    CreateAbility(CreateArgs),
+    ModifyAbility(ModifyAbilityArgs),
+    DeleteAbility(DeleteArgs),
 }
 
 #[derive(Args, Debug)]
@@ -55,7 +55,7 @@ pub struct ModifyCharArgs {
     pub description: bool,
 
     #[arg(short('j'), long)]
-    pub attacks: bool,
+    pub abilities: bool,
 
     #[arg(short('k'), long("prof"))]
     pub proficiencies: bool,
@@ -71,7 +71,7 @@ pub struct DeleteArgs {
 }
 
 #[derive(Args, Debug)]
-pub struct ModifyAttackArgs {
+pub struct ModifyAbilityArgs {
     #[arg(short, long)]
     pub path: String,
     
